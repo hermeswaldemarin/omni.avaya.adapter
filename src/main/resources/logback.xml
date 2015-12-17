@@ -2,19 +2,11 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <appender name="STDOUT" class="br.com.omniplusoft.gateway.infrastructure.config.OmniGatewayCTIAppender">
-
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <root level="error">
-        <appender-ref ref="STDOUT" />
-    </root>
 
 
-    <logger name="org.springframework" level="ERROR"/>
+
+    <logger name="org.springframework" level="TRACE"/>
+    <logger name="org.apache.catalina" level="TRACE"/>
     <logger name="br.com.omniplusoft" level="TRACE"/>
 
 
