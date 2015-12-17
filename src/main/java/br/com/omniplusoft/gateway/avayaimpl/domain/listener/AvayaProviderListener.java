@@ -1,5 +1,6 @@
-package br.com.omniplusoft.gateway.avayaimpl.domain;
+package br.com.omniplusoft.gateway.avayaimpl.domain.listener;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,6 +2,7 @@ package br.com.omniplusoft.gateway.avayaimpl;
 
 import br.com.omniplusoft.gateway.CtiPlatformApplication;
 import br.com.omniplusoft.gateway.avayaimpl.domain.*;
+import br.com.omniplusoft.gateway.avayaimpl.domain.handler.*;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIEventHandler;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.*;
 import org.junit.After;
@@ -10,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**

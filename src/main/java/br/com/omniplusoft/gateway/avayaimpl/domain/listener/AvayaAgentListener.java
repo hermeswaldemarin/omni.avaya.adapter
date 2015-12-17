@@ -1,5 +1,6 @@
-package br.com.omniplusoft.gateway.avayaimpl.domain;
+package br.com.omniplusoft.gateway.avayaimpl.domain.listener;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,5 +1,6 @@
-package br.com.omniplusoft.gateway.avayaimpl.domain;
+package br.com.omniplusoft.gateway.avayaimpl.domain.listener;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import com.avaya.jtapi.tsapi.LucentCallInfo;
 import com.avaya.jtapi.tsapi.LucentV6Agent;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.telephony.*;
+import javax.telephony.callcontrol.CallControlCall;
 import javax.telephony.callcontrol.CallControlConnectionEvent;
 import javax.telephony.callcontrol.CallControlTerminalConnectionEvent;
 import javax.telephony.callcontrol.CallControlTerminalConnectionListener;
@@ -117,7 +119,17 @@ public class AvayaCallControlTerminalConnectionListener implements
 
                     logger.trace("terminalConnectionRinging : 11 ");
 
-                    avayaService.sendUUI(uui, origin);
+                    String calledNumber = "";
+                    if ( avayaService.getActiveCall() != null ){
+
+                        Address adrAux = ((CallControlCall)avayaService.getActiveCall()).getCalledAddress();
+                        if(adrAux != null){
+                            calledNumber = adrAux.getName();
+                        }
+                    }
+
+
+                    avayaService.sendUUI(uui, origin, calledNumber);
 
                     logger.trace("terminalConnectionRinging : 13 ");
 

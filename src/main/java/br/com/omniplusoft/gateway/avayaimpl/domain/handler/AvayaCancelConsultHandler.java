@@ -1,5 +1,6 @@
-package br.com.omniplusoft.gateway.avayaimpl.domain;
+package br.com.omniplusoft.gateway.avayaimpl.domain.handler;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.CancelConsultEvent;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.CTIEvents;

@@ -1,12 +1,14 @@
 package br.com.omniplusoft.gateway.avayaimpl.domain;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaAgentListener;
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaCallControlTerminalConnectionListener;
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaProviderListener;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import com.avaya.jtapi.tsapi.LucentTerminal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.telephony.Address;
@@ -111,10 +113,11 @@ public class AvayaService {
         return callbackDispatcher;
     }
 
-    public void sendUUI(String uui, String origin) {
+    public void sendUUI(String uui, String origin, String calledNumber) {
         callbackDispatcher.dispatch(new CTIStatusResponse("Ringing", Collections.unmodifiableMap(Stream.of(
                 new AbstractMap.SimpleEntry<>("uui", uui),
-                new AbstractMap.SimpleEntry<>("origin", origin))
+                new AbstractMap.SimpleEntry<>("origin", origin),
+                new AbstractMap.SimpleEntry<>("calledNumber", calledNumber))
                 .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue()))))
         );
     }
@@ -150,37 +153,5 @@ public class AvayaService {
     public void setCallbackDispatcher(CallbackDispatcher callbackDispatcher) {
         this.callbackDispatcher = callbackDispatcher;
     }
-
-    public String dialedNumber() throws Exception{
-
-        String number = "";
-        if ( this.activeCall != null ){
-
-            Address adrAux = ((CallControlCall)this.activeCall).getCalledAddress();
-            if(adrAux != null){
-                number = adrAux.getName();
-            }
-        }
-
-        return number;
-    }
-
-    public String nomeAgente() {
-        try{
-            if ( this.activeTerminal == null ){
-                return null;
-            }
-            else{
-                LucentTerminal lucentTerminal =(LucentTerminal)this.activeTerminal;
-                return lucentTerminal.getDirectoryName();
-            }
-        }catch (Exception e) {
-            logger.error("Erro nomeAgente - >", e);
-        }
-
-        return "";
-
-    }
-
 
 }

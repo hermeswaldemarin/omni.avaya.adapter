@@ -1,6 +1,9 @@
-package br.com.omniplusoft.gateway.avayaimpl.domain;
+package br.com.omniplusoft.gateway.avayaimpl.domain.handler;
 
+import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIErrorResponse;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIResponse;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.LoginEvent;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.CTIEvents;
@@ -22,6 +25,10 @@ import javax.telephony.Provider;
 import javax.telephony.callcenter.ACDAddress;
 import javax.telephony.callcenter.Agent;
 import javax.telephony.callcenter.AgentTerminal;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by hermeswaldemarin on 14/12/15.
@@ -98,14 +105,16 @@ public class AvayaLoginHandler {
 
                 logger.trace("Agent added");
 
+                String agentName = ((LucentTerminal)avayaService.getActiveTerminal()).getDirectoryName();
+
+                callbackDispatcher.dispatch(new CTIStatusResponse("Login OK", Collections.unmodifiableMap(Stream.of(
+                        new AbstractMap.SimpleEntry<>("agentName", agentName))
+                        .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
+
             }catch (Throwable e){
                 callbackDispatcher.dispatch(new CTIErrorResponse("Avaya Initialize Erro: ", e));
                 throw new ExceptionInInitializerError(e);
             }
-
-            //CTIPrincipal principal = new CTIPrincipal();
-            //principal.login(event.getServiceName(), event.getUserAdmin(), event.getPasswordAdmin(), event.getTerminalNumber(), event.getAgentNumber());
-
 
         }
 

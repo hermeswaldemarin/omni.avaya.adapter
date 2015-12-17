@@ -1,8 +1,8 @@
 package br.com.omniplusoft.gateway.avayaimpl;
 
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaAgentListener;
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaCallControlTerminalConnectionListener;
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaProviderListener;
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaAgentListener;
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaCallControlTerminalConnectionListener;
+import br.com.omniplusoft.gateway.avayaimpl.domain.listener.AvayaProviderListener;
 import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.LoginEvent;

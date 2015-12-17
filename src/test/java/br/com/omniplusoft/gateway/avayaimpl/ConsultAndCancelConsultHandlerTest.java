@@ -1,9 +1,9 @@
 package br.com.omniplusoft.gateway.avayaimpl;
 
 import br.com.omniplusoft.gateway.CtiPlatformApplication;
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaAnswerHandler;
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaLoginHandler;
-import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaMakeCallHandler;
+import br.com.omniplusoft.gateway.avayaimpl.domain.handler.AvayaAnswerHandler;
+import br.com.omniplusoft.gateway.avayaimpl.domain.handler.AvayaLoginHandler;
+import br.com.omniplusoft.gateway.avayaimpl.domain.handler.AvayaMakeCallHandler;
 import br.com.omniplusoft.gateway.avayaimpl.domain.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIEventHandler;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.*;
@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
