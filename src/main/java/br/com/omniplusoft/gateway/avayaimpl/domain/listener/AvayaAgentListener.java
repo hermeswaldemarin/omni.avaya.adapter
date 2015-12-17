@@ -29,57 +29,57 @@ public class AvayaAgentListener implements AgentTerminalListener {
 
 	public void terminalListenerEnded(TerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("LISTENER_ENDED"));
-        logger.trace("terminalListenerEnded");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalListenerEnded");
 	}
 
 	public void agentTerminalBusy(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("TERMINAL_BUSY"));
-        logger.trace("agentTerminalBusy");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalBusy");
 	}
 
 	public void agentTerminalLoggedOff(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("LOGGED_OFF"));
-        logger.trace("agentTerminalLoggedOff");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalLoggedOff");
 		avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}
 
 	public void agentTerminalLoggedOn(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("LOGGED_ON"));
-        logger.trace("agentTerminalLoggedOn");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalLoggedOn");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}
 
 	public void agentTerminalNotReady(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("NOT_READY"));
-        logger.trace("agentTerminalNotReady");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalNotReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}
 
 	public void agentTerminalReady(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("READY"));
-        logger.trace("agentTerminalReady");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}
 
 	public void agentTerminalUnknown(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("UNKNOWN"));
-        logger.trace("agentTerminalUnknown");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalUnknown");
 	}
 
 	public void agentTerminalWorkNotReady(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ACW"));
-        logger.trace("agentTerminalWorkNotReady");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalWorkNotReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}
 
 	public void agentTerminalWorkReady(AgentTerminalEvent arg0) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("WORK READY"));
-        logger.trace("agentTerminalWorkReady");
+        logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalWorkReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
 	}

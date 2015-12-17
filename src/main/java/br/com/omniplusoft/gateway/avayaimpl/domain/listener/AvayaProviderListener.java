@@ -26,7 +26,7 @@ public class AvayaProviderListener implements ProviderListener {
     }
 
 	public void providerEventTransmissionEnded(ProviderEvent e) {
-        logger.info("providerEventTransmissionEnded");
+        logger.trace("providerEventTransmissionEnded");
 	}
 
 	
@@ -39,12 +39,12 @@ public class AvayaProviderListener implements ProviderListener {
 
 	
 	public void providerOutOfService(ProviderEvent e) {
-        logger.info("providerOutOfService");
+        logger.trace("providerOutOfService");
 	}
 
 	
 	public void providerShutdown(ProviderEvent e) {
-        logger.info("providerOutOfService");
+        logger.trace("providerOutOfService");
 	}
 
     public Object getSigProvider() {

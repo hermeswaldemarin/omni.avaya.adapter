@@ -36,30 +36,30 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void terminalConnectionBridged(CallControlTerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("BRIDGED"));
-        logger.trace("terminalConnectionBridged");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionBridged");
     }
 
     public void terminalConnectionDropped(CallControlTerminalConnectionEvent e) {
         if(!onHold){
             avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DROPPED"));
         }
-        logger.trace("terminalConnectionDropped");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionDropped");
     }
 
     public void terminalConnectionHeld(CallControlTerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("HOLD"));
         onHold = true;
-        logger.trace("terminalConnectionHeld");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionHeld");
     }
 
     public void terminalConnectionInUse(CallControlTerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("IN_USE"));
-        logger.trace("terminalConnectionInUse");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionInUse");
     }
 
     public void terminalConnectionRinging(CallControlTerminalConnectionEvent e) {
 
-        logger.trace("terminalConnectionRinging");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging");
 
         Address callingAddress = e.getCallingAddress();
         Call call = e.getCall();
@@ -68,7 +68,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
         if(avayaService.getConsultCall() == null){
 
-            logger.trace("HAS ACTIVE CALL");
+            logger.trace(avayaService.getActiveTerminal().getName()+" HAS ACTIVE CALL");
 
 
             if(avayaService.getActiveCall() == null){
@@ -85,20 +85,20 @@ public class AvayaCallControlTerminalConnectionListener implements
                     if (e.getID() != CallControlConnectionEvent.CALLCTL_CONNECTION_NETWORK_REACHED) {
                         avayaUUI = ((LucentCallInfo) call).getUserToUserInfo();
                         if (avayaUUI != null) {
-                            logger.trace("terminalConnectionRinging : avayaUUI " + avayaUUI.getString());
+                            logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : avayaUUI " + avayaUUI.getString());
 
                             uui = avayaUUI.getString().split("\0")[0];
                         }
                     }
                 }
 
-                logger.trace("terminalConnectionRinging : 1 ");
+                logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 1 ");
 
                 if (uui != null) {
                     logger.info("UUI: " + uui);
                 }
 
-                logger.trace("terminalConnectionRinging : 2 ");
+                logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 2 ");
 
                 String origin ;
                 if (e.getCallingAddress()!= null) {
@@ -110,14 +110,14 @@ public class AvayaCallControlTerminalConnectionListener implements
                 try
                 {
 
-                    logger.trace("terminalConnectionRinging : 5 ");
+                    logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 5 ");
 
                     uui = uui.replace('\r', ' ');
                     uui = uui.replace('\n', ' ');
 
-                    logger.trace("terminalConnectionRinging : 6 ");
+                    logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 6 ");
 
-                    logger.trace("terminalConnectionRinging : 11 ");
+                    logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 11 ");
 
                     String calledNumber = "";
                     if ( avayaService.getActiveCall() != null ){
@@ -131,7 +131,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
                     avayaService.sendUUI(uui, origin, calledNumber);
 
-                    logger.trace("terminalConnectionRinging : 13 ");
+                    logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging : 13 ");
 
                 }
                 catch (Exception e2)
@@ -147,25 +147,25 @@ public class AvayaCallControlTerminalConnectionListener implements
     public void terminalConnectionTalking(CallControlTerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("SPEAKING"));
         onHold = false;
-        logger.trace("terminalConnectionTalking");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionTalking");
     }
 
 
     public void terminalConnectionUnknown(CallControlTerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("UNKNOWN"));
-        logger.trace("terminalConnectionUnknown");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionUnknown");
     }
 
 
     public void connectionAlerting(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ALERTING"));
-        logger.trace("connectionAlerting");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionAlerting");
     }
 
 
     public void connectionDialing(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DIALING"));
-        logger.trace("connectionDialing");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionDialing");
     }
 
 
@@ -173,7 +173,7 @@ public class AvayaCallControlTerminalConnectionListener implements
         if(!onHold){
             avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DISCONNECTED"));
         }
-        logger.trace("connectionDisconnected");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionDisconnected");
     }
 
     public void connectionEstablished(CallControlConnectionEvent e) {
@@ -189,55 +189,55 @@ public class AvayaCallControlTerminalConnectionListener implements
 
         }
 
-        logger.trace("connectionEstablished");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionEstablished");
     }
 
 
     public void connectionFailed(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("FAILED"));
-        logger.trace("connectionFailed");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionFailed");
     }
 
 
     public void connectionInitiated(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("INITIATED"));
-        logger.trace("connectionInitiated");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionInitiated");
     }
 
 
     public void connectionNetworkAlerting(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("NETWORK_ALERTING"));
-        logger.trace("connectionNetworkAlerting");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionNetworkAlerting");
     }
 
 
     public void connectionNetworkReached(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("REACHED"));
-        logger.trace("connectionNetworkReached");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionNetworkReached");
     }
 
 
     public void connectionOffered(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("OFFERED"));
-        logger.trace("connectionOffered");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionOffered");
     }
 
 
     public void connectionQueued(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("QUEUED"));
-        logger.trace("connectionQueued");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionQueued");
     }
 
 
     public void connectionUnknown(CallControlConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("UNKNOWN"));
-        logger.trace("connectionUnknown");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionUnknown");
     }
 
 
     public void callActive(CallEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ACTIVE"));
-        logger.trace("callActive");
+        logger.trace(avayaService.getActiveTerminal().getName()+" callActive");
     }
 
 
@@ -293,73 +293,73 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void callInvalid(CallEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("INVALID"));
-        logger.trace("callInvalid");
+        logger.trace(avayaService.getActiveTerminal().getName()+" callInvalid");
     }
 
 
     public void multiCallMetaMergeEnded(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("MERGE_ENDED"));
-        logger.trace("multiCallMetaMergeEnded");
+        logger.trace(avayaService.getActiveTerminal().getName()+" multiCallMetaMergeEnded");
     }
 
 
     public void multiCallMetaMergeStarted(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("MERGE_STARTED"));
-        logger.trace("multiCallMetaMergeStarted");
+        logger.trace(avayaService.getActiveTerminal().getName()+" multiCallMetaMergeStarted");
     }
 
 
     public void multiCallMetaTransferEnded(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("MERGE_TRANSFER_ENDED"));
-        logger.trace("multiCallMetaTransferEnded");
+        logger.trace(avayaService.getActiveTerminal().getName()+" multiCallMetaTransferEnded");
     }
 
 
     public void multiCallMetaTransferStarted(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("M_TRANSF_STARTED"));
-        logger.trace("multiCallMetaTransferStarted");
+        logger.trace(avayaService.getActiveTerminal().getName()+" multiCallMetaTransferStarted");
     }
 
 
     public void singleCallMetaProgressEnded(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("M_PROGRESS_ENDED"));
-        logger.trace("singleCallMetaProgressEnded");
+        logger.trace(avayaService.getActiveTerminal().getName()+" singleCallMetaProgressEnded");
     }
 
 
     public void singleCallMetaProgressStarted(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("M_PROGRESS_STARTED"));
-        logger.trace("singleCallMetaProgressStarted");
+        logger.trace(avayaService.getActiveTerminal().getName()+" singleCallMetaProgressStarted");
     }
 
 
     public void singleCallMetaSnapshotEnded(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("M_SNAP_ENDED"));
-        logger.trace("singleCallMetaSnapshotEnded");
+        logger.trace(avayaService.getActiveTerminal().getName()+" singleCallMetaSnapshotEnded");
     }
 
 
     public void singleCallMetaSnapshotStarted(MetaEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("M_SNAP_STARTED"));
-        logger.trace("singleCallMetaSnapshotStarted");
+        logger.trace(avayaService.getActiveTerminal().getName()+" singleCallMetaSnapshotStarted");
     }
 
 
     public void connectionAlerting(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ALERTING"));
-        logger.trace("connectionAlerting");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionAlerting");
     }
 
 
     public void connectionConnected(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CONNECTED"));
-        logger.trace("connectionConnected");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionConnected");
     }
 
 
     public void connectionCreated(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CREATED"));
-        logger.trace("connectionCreated");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionCreated");
     }
 
 
@@ -367,38 +367,38 @@ public class AvayaCallControlTerminalConnectionListener implements
         if(!onHold){
             avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DISCONNECTED"));
         }
-        logger.trace("connectionDisconnected");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionDisconnected");
     }
 
 
     public void connectionFailed(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("FAILED"));
-        logger.trace("connectionFailed");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionFailed");
     }
 
 
     public void connectionInProgress(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("IN_PROGRESS"));
-        logger.trace("connectionInProgress");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionInProgress");
     }
 
 
     public void connectionUnknown(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("UNKNOWN"));
-        logger.trace("connectionUnknown");
+        logger.trace(avayaService.getActiveTerminal().getName()+" connectionUnknown");
     }
 
 
     public void terminalConnectionActive(TerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ACTIVE"));
-        logger.trace("terminalConnectionActive");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionActive");
 
     }
 
 
     public void terminalConnectionCreated(TerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CREATED"));
-        logger.trace("terminalConnectionCreated");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionCreated");
 
     }
 
@@ -407,25 +407,25 @@ public class AvayaCallControlTerminalConnectionListener implements
         if(!onHold){
             avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DROPPED"));
         }
-        logger.trace("terminalConnectionDropped");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionDropped");
     }
 
 
     public void terminalConnectionPassive(TerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("PASSIVE"));
-        logger.trace("terminalConnectionPassive");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionPassive");
     }
 
 
     public void terminalConnectionRinging(TerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("RINGING"));
-        logger.trace("terminalConnectionRinging");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging");
     }
 
 
     public void terminalConnectionUnknown(TerminalConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("UNKNOWN"));
-        logger.trace("terminalConnectionUnknown");
+        logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionUnknown");
     }
 
 }

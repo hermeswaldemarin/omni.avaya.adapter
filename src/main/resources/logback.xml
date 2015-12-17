@@ -15,7 +15,7 @@
 
 
     <logger name="org.springframework" level="ERROR"/>
-    <logger name="br.com.omniplusoft" level="ERROR"/>
+    <logger name="br.com.omniplusoft" level="TRACE"/>
 
 
 </configuration>

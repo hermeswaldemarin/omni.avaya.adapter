@@ -108,7 +108,7 @@ public class AvayaLoginHandler {
                 String agentName = ((LucentTerminal)avayaService.getActiveTerminal()).getDirectoryName();
 
                 callbackDispatcher.dispatch(new CTIStatusResponse("Login OK", Collections.unmodifiableMap(Stream.of(
-                        new AbstractMap.SimpleEntry<>("agentName", agentName))
+                        new AbstractMap.SimpleEntry<>("agentName", agentName!=null?agentName:"" ))
                         .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
 
             }catch (Throwable e){
