@@ -1,4 +1,4 @@
-package br.com.omniplusoft.ctiplatform.avayaimpl;
+package br.com.omniplusoft.gateway.avayaimpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
