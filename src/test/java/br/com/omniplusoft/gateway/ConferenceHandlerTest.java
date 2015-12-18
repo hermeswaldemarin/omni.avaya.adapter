@@ -1,18 +1,15 @@
 package br.com.omniplusoft.gateway;
 
-import br.com.omniplusoft.gateway.CtiPlatformApplication;
+import br.com.omniplusoft.gateway.domain.avaya.AvayaService;
+import br.com.omniplusoft.gateway.domain.avaya.handler.*;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIEventHandler;
-import br.com.omniplusoft.gateway.domain.ctiplatform.event.ConferenceEvent;
-import org.junit.Assert;
+import br.com.omniplusoft.gateway.domain.ctiplatform.event.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -20,37 +17,83 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = CtiPlatformApplication.class)
-public class ConferenceHandlerTest {
-
-    ConferenceEvent event;
-    private boolean called;
+public class ConferenceHandlerTest   extends AbstractAvayaTest {
 
     @Autowired
     private CTIEventHandler handler;
 
     @Before
-    public void init(){
+    public void init() {
+        super.initLoginEvent();
 
-        event = Mockito.mock(ConferenceEvent.class);
-
-        Mockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                called = true;
-                return null;
-            }
-        }).when(event).getArguments();
-
+        handler.dispatch(loginEvent);
 
     }
 
     @Test
-    public void shouldReceiveALoginEvent(){
+    public void shouldDoConference() throws Exception {
 
-        handler.dispatch(event);
+        Thread.sleep(3000);
 
-        Assert.assertTrue(called);
+        AvayaService avayaServiceSecondAgent = buildExtraAvayaService();
+        AvayaLoginHandler avayaLoginHandler = new AvayaLoginHandler(avayaServiceSecondAgent, callbackDispatcher);
+        avayaLoginHandler.execute(initLoginEventExtraService("2302", "1488"));
+
+        Thread.sleep(3000);
+
+        AvayaService userTwoService = buildExtraAvayaService();
+        AvayaLoginHandler userTwoLoginHandler = new AvayaLoginHandler(userTwoService, callbackDispatcher);
+        userTwoLoginHandler.execute(initLoginEventExtraService("3168", "1478"));
+
+        Thread.sleep(3000);
+
+        AvayaMakeCallHandler avayaMakeCallHandler = new AvayaMakeCallHandler(avayaServiceSecondAgent, callbackDispatcher);
+        avayaMakeCallHandler.execute(new MakeCallEvent("2409"));
+
+        Thread.sleep(3000);
+
+        handler.dispatch(new AnswerEvent());
+
+        Thread.sleep(1000);
+
+        handler.dispatch(new ConferenceEvent("3168"));
+
+        Thread.sleep(1000);
+
+        AvayaAnswerHandler userTwoAnswer = new AvayaAnswerHandler(userTwoService, callbackDispatcher);
+        userTwoAnswer.execute(new AnswerEvent());
+
+        Thread.sleep(1000);
+
+        AvayaDropCallHandler userTwoDropTransfer = new AvayaDropCallHandler(userTwoService, callbackDispatcher);
+        userTwoDropTransfer.execute(new DropCallEvent());
+
+        Thread.sleep(1000);
+
+        handler.dispatch(new DropCallEvent());
+
+
+        Thread.sleep(1000);
+
+        AvayaDropCallHandler userOneDropTransfer = new AvayaDropCallHandler(avayaServiceSecondAgent, callbackDispatcher);
+        userOneDropTransfer.execute(new DropCallEvent());
+
+
+        Thread.sleep(1000);
+
+        AvayaLogoutHandler userTwoLogout = new AvayaLogoutHandler(userTwoService, callbackDispatcher);
+        userTwoLogout.execute(new LogoutEvent());
+
+        Thread.sleep(1000);
+
+        AvayaLogoutHandler userOneLogout = new AvayaLogoutHandler(avayaServiceSecondAgent, callbackDispatcher);
+        userOneLogout.execute(new LogoutEvent());
+
 
     }
 
+    @After
+    public void destroy() {
+        handler.dispatch(new LogoutEvent());
+    }
 }
