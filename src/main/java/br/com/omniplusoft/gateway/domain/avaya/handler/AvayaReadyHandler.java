@@ -1,8 +1,9 @@
 package br.com.omniplusoft.gateway.domain.avaya.handler;
 
 import br.com.omniplusoft.gateway.domain.avaya.AvayaService;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
-import br.com.omniplusoft.gateway.domain.ctiplatform.event.BecomeAvailableEvent;
+import br.com.omniplusoft.gateway.domain.ctiplatform.event.ReadyEvent;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.CTIEvents;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.annotation.EventHandler;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.annotation.Handle;
@@ -13,12 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.telephony.callcenter.Agent;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by hermeswaldemarin on 14/12/15.
  */
 @EventHandler
-public class AvayaBecomeAvailableHandler {
+public class AvayaReadyHandler {
 
     CallbackDispatcher callbackDispatcher;
 
@@ -27,13 +32,13 @@ public class AvayaBecomeAvailableHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public AvayaBecomeAvailableHandler(AvayaService avayaService, CallbackDispatcher callbackDispatcher){
+    public AvayaReadyHandler(AvayaService avayaService, CallbackDispatcher callbackDispatcher){
         this.avayaService = avayaService;
         this.callbackDispatcher = callbackDispatcher;
     }
 
-    @Handle(CTIEvents.BECOMEAVAILABLE)
-    public void execute(BecomeAvailableEvent event){
+    @Handle(CTIEvents.READY)
+    public void execute(ReadyEvent event){
 
         try{
             if (avayaService.getAgentLogged() != null) {
@@ -44,6 +49,12 @@ public class AvayaBecomeAvailableHandler {
         } catch (Exception e) {
             logger.error("Erro setReady - > ", e);
         }
+
+        callbackDispatcher.dispatch(new CTIResponse("ready", 0, "Now you are available.", Collections.unmodifiableMap(Stream.of(
+                new AbstractMap.SimpleEntry<>("arg1", "one"),
+                new AbstractMap.SimpleEntry<>("arg2", "two"))
+                .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue()))))
+        );
 
     }
 }

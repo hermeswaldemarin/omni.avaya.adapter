@@ -70,7 +70,7 @@ public class AvayaCallControlTerminalConnectionListener implements
             logger.trace(avayaService.getActiveTerminal().getName()+" HAS ACTIVE CALL");
 
 
-            if(avayaService.getActiveCall() == null){
+            if(!avayaService.isMakeCallExecuted()){
 
                 avayaService.setActiveCall(call);
 
@@ -249,6 +249,7 @@ public class AvayaCallControlTerminalConnectionListener implements
                 int stateAgent = ((LucentV6Agent)avayaService.getAgentLogged()).getState();
                 avayaService.setConsultCall(null);
                 avayaService.setActiveCall(null);
+                avayaService.setMakeCallExecuted(false);
 
                 String status = null;
 

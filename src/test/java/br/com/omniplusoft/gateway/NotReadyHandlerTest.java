@@ -1,9 +1,8 @@
 package br.com.omniplusoft.gateway;
 
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIEventHandler;
-import br.com.omniplusoft.gateway.domain.ctiplatform.event.BecomeAvailableEvent;
-import br.com.omniplusoft.gateway.domain.ctiplatform.event.BecomeUnavailableEvent;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.LogoutEvent;
+import br.com.omniplusoft.gateway.domain.ctiplatform.event.NotReadytEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Created by hermeswaldemarin on 14/12/15.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = CtiPlatformApplication.class)
-public class BecomeUnavailableHandlerTest extends AbstractAvayaTest{
+@SpringApplicationConfiguration(classes = OmniPlusoftGatewayPlatformApplication.class)
+public class NotReadyHandlerTest extends AbstractAvayaTest{
 
     @Autowired
     private CTIEventHandler handler;
@@ -33,11 +32,11 @@ public class BecomeUnavailableHandlerTest extends AbstractAvayaTest{
     @Test
     public void shouldReceiveALoginEvent() throws Exception{
 
-        handler.dispatch(new BecomeAvailableEvent());
+        handler.dispatch(new NotReadytEvent());
 
         Thread.sleep(1000);
 
-        handler.dispatch(new BecomeUnavailableEvent("1"));
+        handler.dispatch(new NotReadytEvent("1"));
 
     }
 

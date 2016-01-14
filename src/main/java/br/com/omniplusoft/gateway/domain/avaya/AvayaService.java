@@ -3,6 +3,7 @@ package br.com.omniplusoft.gateway.domain.avaya;
 import br.com.omniplusoft.gateway.domain.avaya.listener.AvayaAgentListener;
 import br.com.omniplusoft.gateway.domain.avaya.listener.AvayaCallControlTerminalConnectionListener;
 import br.com.omniplusoft.gateway.domain.avaya.listener.AvayaProviderListener;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import com.avaya.jtapi.tsapi.LucentTerminal;
@@ -36,6 +37,7 @@ public class AvayaService {
     private Object sigProvider = new Object();
     private Agent agentLogged;
     private ACDAddress acdAddress;
+    private boolean makeCallExecuted = false;
 
     @Autowired
     private AvayaProviderListener avayaProviderListener;
@@ -113,7 +115,7 @@ public class AvayaService {
     }
 
     public void sendUUI(String uui, String origin, String calledNumber) {
-        callbackDispatcher.dispatch(new CTIStatusResponse("Ringing", Collections.unmodifiableMap(Stream.of(
+        callbackDispatcher.dispatch(new CTIResponse("ring", 0, "ringing...", Collections.unmodifiableMap(Stream.of(
                 new AbstractMap.SimpleEntry<>("uui", uui),
                 new AbstractMap.SimpleEntry<>("origin", origin),
                 new AbstractMap.SimpleEntry<>("calledNumber", calledNumber))
@@ -155,5 +157,13 @@ public class AvayaService {
 
     public void setSigProvider(Object sigProvider) {
         this.sigProvider = sigProvider;
+    }
+
+    public boolean isMakeCallExecuted() {
+        return makeCallExecuted;
+    }
+
+    public void setMakeCallExecuted(boolean makeCallExecuted) {
+        this.makeCallExecuted = makeCallExecuted;
     }
 }

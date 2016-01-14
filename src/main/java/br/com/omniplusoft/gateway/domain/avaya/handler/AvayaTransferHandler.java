@@ -150,7 +150,7 @@ public class AvayaTransferHandler {
             logger.error("Erro transfere - >", e);
         }
 
-        callbackDispatcher.dispatch(new CTIResponse("status", 0, "Transfer Completed.", Collections.unmodifiableMap(Stream.of(
+        callbackDispatcher.dispatch(new CTIResponse("transfer", 0, "Transfer Completed.", Collections.unmodifiableMap(Stream.of(
                 new AbstractMap.SimpleEntry<>("arg1", "one"),
                 new AbstractMap.SimpleEntry<>("arg2", "two"))
                 .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));

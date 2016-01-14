@@ -1,6 +1,7 @@
 package br.com.omniplusoft.gateway.domain.avaya.handler;
 
 import br.com.omniplusoft.gateway.domain.avaya.AvayaService;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.AnswerEvent;
 import br.com.omniplusoft.gateway.infrastructure.ctiplatform.CTIEvents;
@@ -12,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.telephony.Connection;
 import javax.telephony.TerminalConnection;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by hermeswaldemarin on 14/12/15.
@@ -74,6 +79,12 @@ public class AvayaAnswerHandler {
                 };
 
                 new Thread(task2).start();
+
+                callbackDispatcher.dispatch(new CTIResponse("answer", 0, "Speaking.", Collections.unmodifiableMap(Stream.of(
+                        new AbstractMap.SimpleEntry<>("arg1", "one"),
+                        new AbstractMap.SimpleEntry<>("arg2", "two"))
+                        .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
+
 
             }
         }catch (Exception e) {

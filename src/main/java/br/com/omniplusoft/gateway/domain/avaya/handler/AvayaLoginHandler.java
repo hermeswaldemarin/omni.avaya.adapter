@@ -2,6 +2,7 @@ package br.com.omniplusoft.gateway.domain.avaya.handler;
 
 import br.com.omniplusoft.gateway.domain.avaya.AvayaService;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIErrorResponse;
+import br.com.omniplusoft.gateway.domain.ctiplatform.CTIResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CTIStatusResponse;
 import br.com.omniplusoft.gateway.domain.ctiplatform.CallbackDispatcher;
 import br.com.omniplusoft.gateway.domain.ctiplatform.event.LoginEvent;
@@ -106,7 +107,7 @@ public class AvayaLoginHandler {
 
                 String agentName = ((LucentTerminal)avayaService.getActiveTerminal()).getDirectoryName();
 
-                callbackDispatcher.dispatch(new CTIStatusResponse("Login OK", Collections.unmodifiableMap(Stream.of(
+                callbackDispatcher.dispatch(new CTIResponse("login", 0, "Login OK", Collections.unmodifiableMap(Stream.of(
                         new AbstractMap.SimpleEntry<>("agentName", agentName!=null?agentName:"" ))
                         .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
 

@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Created by hermeswaldemarin on 14/12/15.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = CtiPlatformApplication.class)
+@SpringApplicationConfiguration(classes = OmniPlusoftGatewayPlatformApplication.class)
 public class AnswerHandlerTest extends AbstractAvayaTest {
 
     @Autowired

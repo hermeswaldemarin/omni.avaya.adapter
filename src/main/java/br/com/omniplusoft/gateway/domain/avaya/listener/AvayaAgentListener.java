@@ -41,6 +41,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalLoggedOff");
 		avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 	public void agentTerminalLoggedOn(AgentTerminalEvent arg0) {
@@ -48,6 +49,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalLoggedOn");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 	public void agentTerminalNotReady(AgentTerminalEvent arg0) {
@@ -55,6 +57,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalNotReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 	public void agentTerminalReady(AgentTerminalEvent arg0) {
@@ -62,6 +65,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 	public void agentTerminalUnknown(AgentTerminalEvent arg0) {
@@ -74,6 +78,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalWorkNotReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 	public void agentTerminalWorkReady(AgentTerminalEvent arg0) {
@@ -81,6 +86,7 @@ public class AvayaAgentListener implements AgentTerminalListener {
         logger.trace(avayaService.getActiveTerminal().getName()+" agentTerminalWorkReady");
         avayaService.setConsultCall(null);
         avayaService.setActiveCall(null);
+        avayaService.setMakeCallExecuted(false);
 	}
 
 
