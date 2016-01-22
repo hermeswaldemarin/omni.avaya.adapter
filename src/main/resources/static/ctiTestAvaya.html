@@ -1,0 +1,141 @@
+<!doctype html>
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="stomp.js"></script>
+<script src="sockjs-1.0.3.js"></script>
+
+<script>
+    //var socket = new WebSocket("ws://localhost:8080/stomp");
+    //var stompClient = Stomp.over(socket);
+
+    var socket = new SockJS("http://localhost:8080/sockjs");
+    var stompClient = Stomp.over(socket);
+
+
+
+    $( document ).ready(function() {
+
+        stompClient.connect({}, function(frame) {
+
+            stompClient.subscribe("/messages/cti/eventcallback", function(message) {
+                $("#mensagem").html(JSON.parse(message.body).returnMessage);
+            });
+
+            stompClient.subscribe("/messages/cti/log", function(message) {
+                $("#error").html($("#error").html() + "<BR>" + message.body);
+            });
+
+        });
+
+    });
+
+    function send(event, object){
+        stompClient.send("/gateway/cti/command/" + event, {destination: "/gateway/cti/command/" + event}, JSON.stringify(object));
+    }
+""
+    function login(){
+        send("login",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function logout(){
+        send("login",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function xxx(){
+        send("xxx",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function becomeAvailable(){
+        send("becomeAvailable",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function becomeUnavailable(){
+        send("becomeUnavailable",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function answer(){
+        send("answer",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+    function dropCall(){
+        send("dropCall",
+                {
+                    arguments : {
+                        arg1 : "teste",
+                        arg2 : "teste2"
+                    }
+                }
+        );
+    }
+
+</script>
+
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+</head>
+<body>
+
+
+
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+<button onclick="xxx()">xxx</button>
+<button onclick="becomeAvailable()">Become Available</button>
+<button onclick="becomeUnavailable()">Become Unavailable</button>
+<button onclick="answer()">answer</button>
+<button onclick="dropCall()">dropCall</button>
+
+<br>
+<div id="mensagem"></div>
+<BR>
+<BR>
+ERROS
+<div id="error"></div>
+
+</body>
+</html>
