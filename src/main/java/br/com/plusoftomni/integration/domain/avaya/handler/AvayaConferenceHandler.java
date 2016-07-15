@@ -41,39 +41,64 @@ public class AvayaConferenceHandler {
     public void execute(ConferenceEvent event){
         try {
 
-            if (avayaService.getActiveCall() == null) {
-                logger.info("Needed to be in a active call");
-                return;
+            if(avayaService.getConsultCall() != null){
+
+                logger.info("CONFERENCE -> Conference after consult = ");
+                logger.info("CONFERENCE -> PASSO = 1 ");
+
+                if((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1] != null){
+
+                    try {
+                        Call ligacaoConferencia = avayaService.getConsultCall();
+                        ((CallControlCall) ligacaoConferencia).setConferenceEnable(true);
+                        ((CallControlCall) ligacaoConferencia).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[1]);
+                        ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
+                        ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+                        ((CallControlCall) avayaService.getActiveCall()).conference(ligacaoConferencia);
+
+                    } catch (Exception e) {
+                        logger.info("CONFERENCE -> ERRO = 1 ");
+                        logger.error("CONFERENCE transfere - >", e);
+
+                    }
+                }
+
+            } else {
+
+                if (avayaService.getActiveCall() == null) {
+                    logger.info("Needed to be in a active call");
+                    return;
+                }
+
+                ((CallControlCall) avayaService.getActiveCall()).setConferenceEnable(true);
+
+                logger.trace("Informing the connection that control the conference");
+
+                ((CallControlCall) avayaService.getActiveCall()).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[0]);
+
+                logger.trace("Putting the active call in held");
+
+                ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).hold();
+
+                logger.trace("Create a new connection that will be used in the conference");
+
+                Call ligacaoConferencia = avayaService.getProvider().createCall();
+
+                ligacaoConferencia.connect(avayaService.getActiveTerminal(), avayaService.getActiveAddress(), event.getCallNumber());
+
+                ((CallControlCall) ligacaoConferencia).setConferenceEnable(true);
+                ((CallControlCall) ligacaoConferencia).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[1]);
+                ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
+                ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+                ((CallControlCall) avayaService.getActiveCall()).conference(ligacaoConferencia);
+
+                logger.info("Terminal [{}] conference to {}", avayaService.getActiveTerminal().getName(), event.getCallNumber());
+
+                callbackDispatcher.dispatch(new CTIResponse("conference", 0, "Conference Completed.", Collections.unmodifiableMap(Stream.of(
+                        new AbstractMap.SimpleEntry<>("arg1", "one"),
+                        new AbstractMap.SimpleEntry<>("arg2", "two"))
+                        .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
             }
-
-            ((CallControlCall)avayaService.getActiveCall()).setConferenceEnable(true);
-
-            logger.trace("Informing the connection that control the conference");
-
-            ((CallControlCall)avayaService.getActiveCall()).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[0]);
-
-            logger.trace("Putting the active call in held");
-
-            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).hold();
-
-            logger.trace("Create a new connection that will be used in the conference");
-
-            Call ligacaoConferencia = avayaService.getProvider().createCall();
-
-            ligacaoConferencia.connect(avayaService.getActiveTerminal(), avayaService.getActiveAddress(), event.getCallNumber());
-
-            ((CallControlCall)ligacaoConferencia).setConferenceEnable(true);
-            ((CallControlCall)ligacaoConferencia).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[1]);
-            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
-            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
-            ((CallControlCall)avayaService.getActiveCall()).conference(ligacaoConferencia);
-
-            logger.info("Terminal [{}] conference to {}", avayaService.getActiveTerminal().getName(), event.getCallNumber());
-
-            callbackDispatcher.dispatch(new CTIResponse("conference", 0, "Conference Completed.", Collections.unmodifiableMap(Stream.of(
-                    new AbstractMap.SimpleEntry<>("arg1", "one"),
-                    new AbstractMap.SimpleEntry<>("arg2", "two"))
-                    .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
 
         } catch (Exception e) {
             logger.error("Conference error", e);

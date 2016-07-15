@@ -22,7 +22,7 @@ public abstract class AbstractAvayaTest {
     public static String agente2 = "1488";
 
     public static String ramal3 = "3168";
-    public static String agente3 = "1478";
+    public static String agente3 = "1490";
 
     public static String serviceName = "AVAYA#PLURISMIDIA#CSTA#CTIAES";
     public static String userAdmin = "ctiuser";

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.telephony.callcontrol.CallControlCall;
 import javax.telephony.callcontrol.CallControlTerminalConnection;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -46,13 +47,16 @@ public class AvayaCancelConsultHandler {
 
                         logger.trace("Active Connections : {}", avayaService.getActiveTerminal().getTerminalConnections().length);
 
-                        if (avayaService.getActiveTerminal().getTerminalConnections().length > 1)
-                        {
+                        if (avayaService.getActiveTerminal().getTerminalConnections().length > 1) {
+
                             ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).getConnection().disconnect();
                             ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
-                        }
-                        else
-                        {
+
+                        } else if ( ((CallControlCall) avayaService.getActiveCall()).getConferenceEnable() ) {
+
+                            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getConnection().disconnect();
+
+                        } else {
                             if (avayaService.getActiveTerminal().getTerminalConnections().length == 1){
                                 ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
                             }else{
