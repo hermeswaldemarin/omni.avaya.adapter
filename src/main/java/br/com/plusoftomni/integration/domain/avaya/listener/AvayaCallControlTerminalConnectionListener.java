@@ -242,13 +242,19 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void callEventTransmissionEnded(CallEvent e) {
 
+        if ( e.getCall().equals( avayaService.getConsultCall() ) ) {
+            avayaService.setConsultCall(null);
+        } else if ( e.getCall().equals( avayaService.getActiveCall() ) ) {
+            avayaService.setActiveCall(null);
+        }
+
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CALL_ENDED"));
 
         Runnable task2 = () -> {
             try {
                 int stateAgent = ((LucentV6Agent)avayaService.getAgentLogged()).getState();
-                avayaService.setConsultCall(null);
-                avayaService.setActiveCall(null);
+                //avayaService.setConsultCall(null);
+                //avayaService.setActiveCall(null);
                 avayaService.setMakeCallExecuted(false);
 
                 String status = null;

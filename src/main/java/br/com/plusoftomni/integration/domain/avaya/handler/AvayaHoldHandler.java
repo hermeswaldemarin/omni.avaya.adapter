@@ -44,7 +44,25 @@ public class AvayaHoldHandler {
 
                     logger.trace("Set Terminal [{}] on hold", avayaService.getActiveTerminal().getName());
 
-                    ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).hold();
+                    if ( event.getArguments().get("hold_type").equals("hold") ) {
+
+                        if ( event.getArguments().get("isHolding").equals("true") ) {
+                            ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).hold();
+                        } else {
+                            ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+                        }
+
+                    } else if ( event.getArguments().get("hold_type").equals("hold_ramal") ) {
+
+                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
+                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+
+                    } else if ( event.getArguments().get("hold_type").equals("hold_cliente") ) {
+
+                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).hold();
+                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).unhold();
+
+                    }
 
                     logger.trace("Terminal [{}] Hold setted", avayaService.getActiveTerminal().getName());
 
