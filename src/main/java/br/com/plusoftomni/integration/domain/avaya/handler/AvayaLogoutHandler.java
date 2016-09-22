@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.telephony.CallListener;
 import javax.telephony.ProviderListener;
+import javax.telephony.TerminalListener;
 import javax.telephony.callcenter.Agent;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -56,6 +57,7 @@ public class AvayaLogoutHandler {
 
             CallListener[] callListenerArray = null;
             ProviderListener[] providerListener = null;
+            TerminalListener[] terminalListenerArray = null;
 
             if (avayaService.getActiveTerminal() != null) {
                 if ((callListenerArray = avayaService.getActiveTerminal().getCallListeners()) != null) {
@@ -69,7 +71,21 @@ public class AvayaLogoutHandler {
                     }
                 }
 
+                if ((terminalListenerArray = avayaService.getActiveTerminal().getTerminalListeners()) != null) {
+
+                    for( TerminalListener listener : terminalListenerArray){
+                        avayaService.getActiveTerminal().removeTerminalListener(listener);
+
+                        if(listener == null){
+                            break;
+                        }
+                    }
+                }
+
+
             }
+
+
             logger.trace("Shutting down the provider");
             avayaService.getProvider().shutdown();
             logger.trace("Provider is down");

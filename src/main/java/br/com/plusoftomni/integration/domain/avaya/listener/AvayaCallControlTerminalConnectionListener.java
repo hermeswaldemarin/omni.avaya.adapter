@@ -157,7 +157,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
 
     public void connectionAlerting(CallControlConnectionEvent e) {
-        avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ALERTING"));
+        avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("ALERTING_CONTROL"));
         logger.trace(avayaService.getActiveTerminal().getName()+" connectionAlerting");
     }
 
@@ -255,7 +255,7 @@ public class AvayaCallControlTerminalConnectionListener implements
                 int stateAgent = ((LucentV6Agent)avayaService.getAgentLogged()).getState();
                 //avayaService.setConsultCall(null);
                 //avayaService.setActiveCall(null);
-                avayaService.setMakeCallExecuted(false);
+                //avayaService.setMakeCallExecuted(false);
 
                 String status = null;
 
@@ -359,6 +359,12 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void connectionConnected(ConnectionEvent e) {
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CONNECTED"));
+
+        if(avayaService.isMakeCallExecuted()){
+            avayaService.sendUUI("", "", "");
+            avayaService.setMakeCallExecuted(false);
+        }
+
         logger.trace(avayaService.getActiveTerminal().getName()+" connectionConnected");
     }
 
@@ -371,7 +377,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void connectionDisconnected(ConnectionEvent e) {
         if(!onHold){
-            avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DISCONNECTED"));
+            avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DISCONNECTED_CONNECTION"));
         }
         logger.trace(avayaService.getActiveTerminal().getName()+" connectionDisconnected");
     }
@@ -411,7 +417,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void terminalConnectionDropped(TerminalConnectionEvent e) {
         if(!onHold){
-            avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DROPPED"));
+            avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("DROPPED_CONNECTION"));
         }
         logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionDropped");
     }
@@ -424,7 +430,7 @@ public class AvayaCallControlTerminalConnectionListener implements
 
 
     public void terminalConnectionRinging(TerminalConnectionEvent e) {
-        avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("RINGING"));
+        avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("RINGING_CONNECTION"));
         logger.trace(avayaService.getActiveTerminal().getName()+" terminalConnectionRinging");
     }
 

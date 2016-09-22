@@ -11,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.telephony.Address;
-import javax.telephony.Call;
-import javax.telephony.Provider;
-import javax.telephony.Terminal;
+import javax.telephony.*;
 import javax.telephony.callcenter.ACDAddress;
 import javax.telephony.callcenter.Agent;
 import java.util.AbstractMap;
@@ -143,6 +140,8 @@ public class AvayaService {
     }
 
     public void setAvayaCallControlTerminalConnectionListener(AvayaCallControlTerminalConnectionListener avayaCallControlTerminalConnectionListener) {
+
+
         this.avayaCallControlTerminalConnectionListener = avayaCallControlTerminalConnectionListener;
     }
 

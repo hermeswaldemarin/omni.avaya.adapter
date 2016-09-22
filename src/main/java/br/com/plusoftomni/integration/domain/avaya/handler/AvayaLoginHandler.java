@@ -52,62 +52,66 @@ public class AvayaLoginHandler {
         Runnable task2 = () -> {
 
             try{
+                if(avayaService.getProvider() == null) {
+                    logger.trace("LoginEvent received {}", ReflectionToStringBuilder.toString(event, ToStringStyle.MULTI_LINE_STYLE));
 
-                logger.trace("LoginEvent received {}", ReflectionToStringBuilder.toString(event, ToStringStyle.MULTI_LINE_STYLE) );
+                    avayaService.getAvayaProviderListener().setSigProvider(avayaService.getSigProvider());
 
-                avayaService.getAvayaProviderListener().setSigProvider(avayaService.getSigProvider());
+                    String providerString = event.getServiceName() + ";loginID=" + event.getUserAdmin() + ";passwd=" + event.getPasswordAdmin();
 
-                String providerString = event.getServiceName() + ";loginID=" + event.getUserAdmin() + ";passwd=" + event.getPasswordAdmin();
+                    logger.trace("Getting JtapiPeer");
 
-                logger.trace("Getting JtapiPeer");
+                    JtapiPeer peer = JtapiPeerFactory.getJtapiPeer(null);
 
-                JtapiPeer peer = JtapiPeerFactory.getJtapiPeer(null);
+                    logger.trace("JtapiPeer returned {}", ReflectionToStringBuilder.toString(peer, ToStringStyle.MULTI_LINE_STYLE));
 
-                logger.trace("JtapiPeer returned {}", ReflectionToStringBuilder.toString(peer, ToStringStyle.MULTI_LINE_STYLE));
+                    avayaService.setProvider(peer.getProvider(providerString));
 
-                avayaService.setProvider(peer.getProvider(providerString));
+                    logger.trace("Provider returned {}", ReflectionToStringBuilder.toString(avayaService.getProvider(), ToStringStyle.MULTI_LINE_STYLE));
 
-                logger.trace("Provider returned {}",ReflectionToStringBuilder.toString(avayaService.getProvider(), ToStringStyle.MULTI_LINE_STYLE) );
+                    synchronized (avayaService.getSigProvider()) {
 
-                synchronized (avayaService.getSigProvider()) {
+                        logger.trace("Waiting for provider start");
 
-                    logger.trace("Waiting for provider start");
+                        avayaService.getSigProvider().wait();
 
-                    avayaService.getSigProvider().wait();
+                        logger.trace("Provider connection established: Provider State {}", avayaService.getProvider().getState());
 
-                    logger.trace("Provider connection established: Provider State {}", avayaService.getProvider().getState());
-
-                    if (avayaService.getProvider().getState() == Provider.OUT_OF_SERVICE) {
-                        throw new RuntimeException("Provider Nao Inicializado");
+                        if (avayaService.getProvider().getState() == Provider.OUT_OF_SERVICE) {
+                            throw new RuntimeException("Provider Nao Inicializado");
+                        }
                     }
+
+
+                    avayaService.setActiveAddress(avayaService.getProvider().getAddress(event.getTerminalNumber()));
+                    avayaService.setActiveTerminal(avayaService.getProvider().getTerminal(event.getTerminalNumber()));
+
+
+                    if (event.getGroup() != null
+                            && !event.getGroup().equals("")) {
+
+                        avayaService.setAcdAddress((ACDAddress) avayaService.getProvider().getAddress(event.getGroup()));
+                        logger.trace("ACD Group {}", avayaService.getAcdAddress());
+                    }
+
+                    logger.trace("Addind Agent to activeTerminal {}, activeAddress {}, agentNumber {} ",
+                            ReflectionToStringBuilder.toString(avayaService.getActiveTerminal(), ToStringStyle.MULTI_LINE_STYLE),
+                            ReflectionToStringBuilder.toString(avayaService.getActiveAddress(), ToStringStyle.MULTI_LINE_STYLE),
+                            event.getAgentNumber());
+
+                    ((LucentTerminal) avayaService.getActiveTerminal()).addAgent((LucentAddress) avayaService.getActiveAddress(), null,
+                            Agent.LOG_IN, LucentAgent.MODE_AUTO_IN, event.getAgentNumber(), "");
+
+                    avayaService.setAgentLogged(getAgent());
+
+                    logger.trace("Agent added");
+
                 }
 
-                avayaService.setActiveAddress(avayaService.getProvider().getAddress(event.getTerminalNumber()));
-                avayaService.setActiveTerminal(avayaService.getProvider().getTerminal(event.getTerminalNumber()));
-
-                if(event.getGroup()!= null
-                        && !event.getGroup().equals("")){
-
-                    avayaService.setAcdAddress((ACDAddress) avayaService.getProvider().getAddress(event.getGroup()));
-                    logger.trace("ACD Group {}", avayaService.getAcdAddress());
-                }
-
-                logger.trace("Addind Agent to activeTerminal {}, activeAddress {}, agentNumber {} ",
-                        ReflectionToStringBuilder.toString(avayaService.getActiveTerminal(), ToStringStyle.MULTI_LINE_STYLE),
-                        ReflectionToStringBuilder.toString(avayaService.getActiveAddress(), ToStringStyle.MULTI_LINE_STYLE),
-                        event.getAgentNumber());
-
-                ((LucentTerminal)avayaService.getActiveTerminal()).addAgent((LucentAddress)avayaService.getActiveAddress(), null,
-                        Agent.LOG_IN, LucentAgent.MODE_AUTO_IN, event.getAgentNumber(), "");
-
-                avayaService.setAgentLogged(getAgent());
-
-                logger.trace("Agent added");
-
-                String agentName = ((LucentTerminal)avayaService.getActiveTerminal()).getDirectoryName();
+                String agentName = ((LucentTerminal) avayaService.getActiveTerminal()).getDirectoryName();
 
                 callbackDispatcher.dispatch(new CTIResponse("login", 0, "Login OK", Collections.unmodifiableMap(Stream.of(
-                        new AbstractMap.SimpleEntry<>("agentName", agentName!=null?agentName:"" ))
+                        new AbstractMap.SimpleEntry<>("agentName", agentName != null ? agentName : ""))
                         .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())))));
 
             }catch (Throwable e){
