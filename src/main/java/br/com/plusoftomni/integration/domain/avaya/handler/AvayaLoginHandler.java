@@ -51,7 +51,6 @@ public class AvayaLoginHandler {
 
         Runnable task2 = () -> {
 
-
             try{
                 if(avayaService.getProvider() == null) {
                     logger.trace("LoginEvent received {}", ReflectionToStringBuilder.toString(event, ToStringStyle.MULTI_LINE_STYLE));
