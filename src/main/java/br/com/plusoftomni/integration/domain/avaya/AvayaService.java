@@ -30,6 +30,7 @@ public class AvayaService {
     private Terminal activeTerminal;
     private Call activeCall;
     private Call consultCall;
+    private Call ligacaoTransferencia;
     private Object sigProvider = new Object();
     private Agent agentLogged;
     private ACDAddress acdAddress;
@@ -127,6 +128,14 @@ public class AvayaService {
         this.consultCall = consultCall;
     }
 
+    public Call getLigacaoTransferencia() {
+        return ligacaoTransferencia;
+    }
+
+    public void setLigacaoTransferencia(Call ligacaoTransferencia) {
+        this.ligacaoTransferencia = ligacaoTransferencia;
+    }
+
     public ACDAddress getAcdAddress() {
         return acdAddress;
     }
@@ -164,4 +173,5 @@ public class AvayaService {
     public void setMakeCallExecuted(boolean makeCallExecuted) {
         this.makeCallExecuted = makeCallExecuted;
     }
+
 }

@@ -43,10 +43,11 @@ public class AvayaAnswerHandler {
 
             Connection[] connections = avayaService.getActiveAddress().getConnections();
 
-            logger.trace("Active Connections : {}", connections.length);
-
             TerminalConnection callTerminalConnection = null;
             if (connections != null) {
+
+                logger.trace("Active Connections : {}", connections.length);
+
                 for( Connection conn: connections ){
 
                     logger.trace("Address Name : {} , Active Address Name {}", conn.getAddress().getName(), avayaService.getActiveAddress().getName());

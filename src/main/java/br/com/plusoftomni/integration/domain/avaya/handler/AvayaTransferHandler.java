@@ -104,6 +104,7 @@ public class AvayaTransferHandler {
                     //crio uma nova ligcacao que sera transferida
                     logger.info("TRANSF X -> 7 ");
                     Call ligacaoTransferencia = avayaService.getProvider().createCall();
+                    avayaService.setLigacaoTransferencia( ligacaoTransferencia );
                     logger.info("TRANSF X -> 8 ");
                     ((LucentCall)ligacaoTransferencia).connect((LucentTerminal)avayaService.getActiveTerminal(),
                             (LucentAddress)avayaService.getActiveAddress(), event.getDestinationNumber(), false, avayaUUI);
@@ -116,38 +117,100 @@ public class AvayaTransferHandler {
                     ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
                     logger.info("TRANSF X -> 12 ");
                     ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+
+                    logger.info("TRANSF X -> INICIO SLEEP ");
+                    Thread.sleep(1000);
+                    logger.info( "--------------------------INICIO STATUS DA TRANSFERENCIA--------------------------" );
+                    logger.info( "Status do Provider >>> " + String.valueOf(avayaService.getProvider().getState()) );
+                    logger.info( "Status da ligacao >>> " + ((CallControlCall)avayaService.getActiveCall()).getState() );
+                    logger.info( "Status da ligacao de transferencia >>> " + ligacaoTransferencia.getState() );
+                    logger.info( "Status Terminal connection 1 >>> " + ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getCallControlState() );
+                    logger.info( "Status Terminal connection 2 >>> " + ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).getCallControlState() );
+                    logger.info( "--------------------------FIM STATUS DA TRANSFERENCIA--------------------------" );
+                    logger.info("TRANSF X -> FIM SLEEP ");
+
                     logger.info("TRANSF X -> 13 ");
-                    ((CallControlCall)avayaService.getActiveCall()).transfer(ligacaoTransferencia);
-                    logger.info("TRANSF X -> 14 ");
-                    logger.info("Terminal [{}] Transferindo Para {}", avayaService.getActiveAddress().getName(), event.getDestinationNumber());
-                    logger.info("TRANSF X -> 15 ");
+
+                    if ( avayaService.getProvider().getState() == avayaService.getProvider().IN_SERVICE  ){
+
+                        if ( avayaService.getActiveCall().getState() == Call.ACTIVE ) {
+
+                            if ( ligacaoTransferencia.getState() == Call.ACTIVE ) {
+
+                                if ( ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getCallControlState() == CallControlTerminalConnection.TALKING
+                                        || ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getCallControlState() == CallControlTerminalConnection.HELD ) {
+
+                                    if ( ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).getCallControlState() == CallControlTerminalConnection.TALKING
+                                            || ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).getCallControlState() == CallControlTerminalConnection.HELD ) {
+
+                                        ((CallControlCall)avayaService.getActiveCall()).transfer(ligacaoTransferencia);
+                                        //((CallControlCall) ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).getTerminal().getProvider().getCalls()[0]).transfer(ligacaoTransferencia);
+
+                                        logger.info("TRANSF X -> 14 ");
+                                        logger.info("Terminal [{}] Transferindo Para {}", avayaService.getActiveAddress().getName(), event.getDestinationNumber());
+                                        logger.info("TRANSF X -> 15 ");
 
 
-                    try{
-                        if (avayaService.getActiveTerminal().getTerminalConnections().length > 1){
+                                        try {
+                                            if (avayaService.getActiveTerminal().getTerminalConnections() != null && avayaService.getActiveTerminal().getTerminalConnections().length > 1) {
 
 
-                            TerminalConnection terminalConnectionDrop = avayaService.getActiveTerminal().getTerminalConnections()[1];
+                                                TerminalConnection terminalConnectionDrop = avayaService.getActiveTerminal().getTerminalConnections()[1];
 
-                            logger.trace("Terminal [{}] Ending Call", avayaService.getActiveTerminal().getName());
+                                                logger.trace("Terminal [{}] Ending Call", avayaService.getActiveTerminal().getName());
 
-                            if (terminalConnectionDrop != null) {
-                                terminalConnectionDrop.getConnection().disconnect();
-                                logger.trace("Terminal [{}] Call Ended", avayaService.getActiveTerminal().getName());
+                                                if (terminalConnectionDrop != null) {
+                                                    terminalConnectionDrop.getConnection().disconnect();
+                                                    logger.trace("Terminal [{}] Call Ended", avayaService.getActiveTerminal().getName());
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                            logger.error("Erro disconnect - >", e);
+                                            avayaService.setLigacaoTransferencia( null );
+                                        }
+
+                                    } else {
+
+                                        logger.trace("AVAYA >>> CALL CONTROL STATE 2 NOT IN TALKING OR HELD.");
+
+                                    }
+
+                                } else {
+
+                                    logger.trace("AVAYA >>> CALL CONTROL STATE 1 NOT IN TALKING OR HELD.");
+
+                                }
+
+                            } else {
+
+                                logger.trace("AVAYA >>> LIGAÇÃO 2 NÃO ATIVA.");
+
                             }
+
+                        } else {
+
+                            logger.trace("AVAYA >>> LIGAÇÃO 1 NÃO ATIVA.");
+
                         }
-                    } catch (Exception e) {
-                        logger.error("Erro disconnect - >", e);
+
+                    } else {
+
+                        logger.trace("AVAYA >>> NOT IN SERVICE.");
+
                     }
+
+                    avayaService.setLigacaoTransferencia( null );
 
                 } catch (Exception e) {
                     logger.error("Erro transfere - >", e);
+                    avayaService.setLigacaoTransferencia( null );
                 }
             }
 
 
         }catch (Exception e) {
             logger.error("Erro transfere - >", e);
+            avayaService.setLigacaoTransferencia( null );
         }
 
         callbackDispatcher.dispatch(new CTIResponse("transfer", 0, "Transfer Completed.", Collections.unmodifiableMap(Stream.of(

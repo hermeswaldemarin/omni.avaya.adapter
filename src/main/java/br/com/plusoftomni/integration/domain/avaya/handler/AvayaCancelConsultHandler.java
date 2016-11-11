@@ -51,10 +51,11 @@ public class AvayaCancelConsultHandler {
 
                             ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1]).getConnection().disconnect();
                             ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
+                            avayaService.setConsultCall(null);
 
                         } else if ( ((CallControlCall) avayaService.getActiveCall()).getConferenceEnable() ) {
 
-                            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getConnection().disconnect();
+                            ((CallControlCall) avayaService.getActiveCall()).getConnections()[2].disconnect();
 
                         } else {
                             if (avayaService.getActiveTerminal().getTerminalConnections().length == 1){
@@ -62,9 +63,11 @@ public class AvayaCancelConsultHandler {
                             }else{
                                 logger.info("There are no current consult");
                             }
+
+                            avayaService.setConsultCall(null);
                         }
 
-                        avayaService.setConsultCall(null);
+
 
                     } else {
                         logger.info("Terminal connection not found");

@@ -65,7 +65,7 @@ public class AvayaCallControlTerminalConnectionListener implements
         UserToUserInfo avayaUUI = null;
         String uui = new String();
 
-        if(avayaService.getConsultCall() == null){
+        if(avayaService.getConsultCall() == null && avayaService.getLigacaoTransferencia() == null ){
 
             logger.trace(avayaService.getActiveTerminal().getName()+" HAS ACTIVE CALL");
 
