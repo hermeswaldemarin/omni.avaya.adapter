@@ -65,7 +65,7 @@ public class AvayaCallControlTerminalConnectionListener implements
         UserToUserInfo avayaUUI = null;
         String uui = new String();
 
-        if(avayaService.getConsultCall() == null && avayaService.getLigacaoTransferencia() == null ){
+        if( avayaService.getConsultCall() == null && avayaService.getLigacaoTransferencia() == null && avayaService.getLigacaoConferencia() == null ){
 
             logger.trace(avayaService.getActiveTerminal().getName()+" HAS ACTIVE CALL");
 
@@ -242,10 +242,11 @@ public class AvayaCallControlTerminalConnectionListener implements
 
     public void callEventTransmissionEnded(CallEvent e) {
 
-        if ( e.getCall().equals( avayaService.getConsultCall() ) ) {
+        if ( e != null && e.getCall() != null && avayaService.getConsultCall() != null && e.getCall().equals( avayaService.getConsultCall() ) ) {
             avayaService.setConsultCall(null);
-        } else if ( e.getCall().equals( avayaService.getActiveCall() ) ) {
+        } else if ( e != null && e.getCall().equals( avayaService.getActiveCall() ) ) {
             avayaService.setActiveCall(null);
+            avayaService.setLigacaoConferencia(null);
         }
 
         avayaService.getCallbackDispatcher().dispatch(new CTIStatusResponse("CALL_ENDED"));

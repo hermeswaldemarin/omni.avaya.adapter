@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.telephony.Call;
+import javax.telephony.Provider;
+import javax.telephony.TerminalConnection;
 import javax.telephony.callcontrol.CallControlCall;
 import javax.telephony.callcontrol.CallControlTerminalConnection;
 import java.util.AbstractMap;
@@ -49,12 +51,54 @@ public class AvayaConferenceHandler {
                 if((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[1] != null){
 
                     try {
+
                         Call ligacaoConferencia = avayaService.getConsultCall();
                         ((CallControlCall) ligacaoConferencia).setConferenceEnable(true);
                         ((CallControlCall) ligacaoConferencia).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[1]);
                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).hold();
+
+                        ((CallControlCall) avayaService.getActiveCall()).setConferenceEnable(true);
+//                        ((CallControlCall) avayaService.getActiveCall()).setConferenceController(avayaService.getActiveTerminal().getTerminalConnections()[0]);
                         ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
-                        ((CallControlCall) avayaService.getActiveCall()).conference(ligacaoConferencia);
+
+                        logger.info("PROVIDER >>> " + avayaService.getProvider().getState());
+                        logger.info("STATE OF ACTIVE CALL >>> " + ((CallControlCall) avayaService.getActiveCall()).getState());
+                        logger.info("CALL CONTROL TERMINAL STATE 1 >>> " +((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).getCallControlState());
+                        logger.info("CALL CONTROL TERMINAL STATE 2 >>> " +((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).getCallControlState());
+                        logger.info("TERMINAL CONNECTION 1 >>> " + avayaService.getActiveTerminal().getTerminalConnections()[0].getState());
+                        logger.info("TERMINAL CONNECTION 2 >>> " + avayaService.getActiveTerminal().getTerminalConnections()[1].getState());
+
+                        if ( avayaService.getProvider().getState() == Provider.IN_SERVICE ) {
+
+                            if ( ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[0]).getCallControlState() == CallControlTerminalConnection.TALKING ) {
+
+                                if ( ((CallControlTerminalConnection) avayaService.getActiveTerminal().getTerminalConnections()[1]).getCallControlState() == CallControlTerminalConnection.HELD ) {
+
+                                    if ( avayaService.getActiveTerminal().getTerminalConnections()[0].getState() == TerminalConnection.ACTIVE ) {
+
+                                        if ( avayaService.getActiveTerminal().getTerminalConnections()[1].getState() == TerminalConnection.ACTIVE ) {
+
+                                            if (((CallControlCall) avayaService.getActiveCall()).getState() == Call.IDLE ||
+                                                    ((CallControlCall) avayaService.getActiveCall()).getState() == Call.ACTIVE ) {
+
+                                                if ( ligacaoConferencia.getState() == Call.IDLE || ligacaoConferencia.getState() == Call.ACTIVE ) {
+
+                                                    ((CallControlCall) avayaService.getActiveCall()).conference( ligacaoConferencia );
+
+                                                }
+
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
 
                     } catch (Exception e) {
                         logger.info("CONFERENCE -> ERRO = 1 ");
@@ -83,6 +127,7 @@ public class AvayaConferenceHandler {
                 logger.trace("Create a new connection that will be used in the conference");
 
                 Call ligacaoConferencia = avayaService.getProvider().createCall();
+                avayaService.setLigacaoConferencia( ligacaoConferencia );
 
                 ligacaoConferencia.connect(avayaService.getActiveTerminal(), avayaService.getActiveAddress(), event.getCallNumber());
 
@@ -94,6 +139,8 @@ public class AvayaConferenceHandler {
 
                 logger.info("Terminal [{}] conference to {}", avayaService.getActiveTerminal().getName(), event.getCallNumber());
 
+                //avayaService.setLigacaoConferencia( null );
+
                 callbackDispatcher.dispatch(new CTIResponse("conference", 0, "Conference Completed.", Collections.unmodifiableMap(Stream.of(
                         new AbstractMap.SimpleEntry<>("arg1", "one"),
                         new AbstractMap.SimpleEntry<>("arg2", "two"))
@@ -101,6 +148,7 @@ public class AvayaConferenceHandler {
             }
 
         } catch (Exception e) {
+            avayaService.setLigacaoConferencia( null );
             logger.error("Conference error", e);
         }
     }

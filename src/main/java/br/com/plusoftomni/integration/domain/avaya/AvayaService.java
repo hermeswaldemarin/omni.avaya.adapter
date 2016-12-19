@@ -31,6 +31,7 @@ public class AvayaService {
     private Call activeCall;
     private Call consultCall;
     private Call ligacaoTransferencia;
+    private Call ligacaoConferencia;
     private Object sigProvider = new Object();
     private Agent agentLogged;
     private ACDAddress acdAddress;
@@ -146,6 +147,14 @@ public class AvayaService {
 
     public void setAvayaProviderListener(AvayaProviderListener avayaProviderListener) {
         this.avayaProviderListener = avayaProviderListener;
+    }
+
+    public Call getLigacaoConferencia() {
+        return ligacaoConferencia;
+    }
+
+    public void setLigacaoConferencia(Call ligacaoConferencia) {
+        this.ligacaoConferencia = ligacaoConferencia;
     }
 
     public void setAvayaCallControlTerminalConnectionListener(AvayaCallControlTerminalConnectionListener avayaCallControlTerminalConnectionListener) {

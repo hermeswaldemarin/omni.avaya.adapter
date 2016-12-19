@@ -53,11 +53,13 @@ public class AvayaCancelConsultHandler {
                             ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
                             avayaService.setConsultCall(null);
 
-                        } else if ( ((CallControlCall) avayaService.getActiveCall()).getConferenceEnable() ) {
+                        } else if ( avayaService.getLigacaoConferencia() != null && ((CallControlCall) avayaService.getActiveCall()).getConferenceEnable() ) {
 
+                            avayaService.setLigacaoConferencia( null );
                             ((CallControlCall) avayaService.getActiveCall()).getConnections()[2].disconnect();
 
-                        } else {
+                        } else if ( avayaService.getConsultCall() != null ) {
+
                             if (avayaService.getActiveTerminal().getTerminalConnections().length == 1){
                                 ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).unhold();
                             }else{
@@ -65,6 +67,11 @@ public class AvayaCancelConsultHandler {
                             }
 
                             avayaService.setConsultCall(null);
+
+                        } else {
+
+                            ((CallControlTerminalConnection)avayaService.getActiveTerminal().getTerminalConnections()[0]).getConnection().disconnect();
+
                         }
 
 
